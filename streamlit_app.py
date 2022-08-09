@@ -21,7 +21,7 @@ streamlit.dataframe(fruits_to_show)
 
 #create the repeatable code block
 def get_fruityvice_data(this_fruit_choice):
-    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + this_fruit_choice)
     # write your own comment -what does the next line do? 
     fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
     # write your own comment - what does this do?
@@ -48,7 +48,7 @@ except URLError as e:
 streamlit.header("The Fruit load list contains")
 
 def get_fruit_load_list():
-    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
+
     with my_cnx.cursor as my_cur:
         my_cur.execute("select * from fruit_load_list")
         return my_cur.fetchall()
@@ -56,6 +56,7 @@ def get_fruit_load_list():
     
 # ADD a button to load the fruit
 if streamlit.button('Get fruit load list'):
+    my_cnx = snowflake.connector.connect(**streamlit.secrets["snowflake"])
     my_data_rows = get_fruit_load_list()
     streamlit.dataframe(my_data_rows)
 
